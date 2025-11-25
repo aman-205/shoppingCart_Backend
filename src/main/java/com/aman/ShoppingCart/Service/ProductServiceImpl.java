@@ -1,4 +1,109 @@
 package com.aman.ShoppingCart.Service;
 
-public class ProductServiceImpl {
+import com.aman.ShoppingCart.Exception.ProductNotFoundException;
+import com.aman.ShoppingCart.Repo.CategoryRepo;
+import com.aman.ShoppingCart.Repo.ProductRepo;
+import com.aman.ShoppingCart.Request.AddProductRequest;
+import com.aman.ShoppingCart.Request.ProductUpdateRequest;
+import com.aman.ShoppingCart.model.Category;
+import com.aman.ShoppingCart.model.Product;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class ProductServiceImpl implements ProductService{
+
+    @Autowired
+    private ProductRepo productRepo;
+
+    @Autowired
+    private CategoryRepo categoryRepo;
+    @Override
+    public Product addProduct(AddProductRequest request) {
+        Category category= Optional.ofNullable(categoryRepo.findByName(request.getCategory().getName()))
+                .orElseGet(()->{
+                        Category newCategory= new Category(request.getCategory().getName());
+                        return categoryRepo.save(newCategory);
+                })
+                ;
+        Product product = createProduct(request, category);
+        return productRepo.save(product);
+    }
+    public Product createProduct(AddProductRequest request, Category category){
+        return new Product(
+                request.getName(),
+                request.getBrand(),
+                request.getDescription(),
+                request.getPrice(),
+                request.getInventory(),
+                category
+        );
+    }
+
+    @Override
+    public List<Product> getAllProduct() {
+        return productRepo.findAll();
+    }
+
+    @Override
+    public Product getProductById(long id) {
+        return productRepo.findById(id).orElseThrow(()-> new ProductNotFoundException("Product not found"));
+    }
+
+    @Override
+    public void deleteProduct(long id) {
+        productRepo.findById(id).ifPresentOrElse(productRepo::delete,()->{throw new ProductNotFoundException("Product not found");});
+
+    }
+
+    @Override
+    public Product updateProduct(ProductUpdateRequest product, Long id) {
+        return  productRepo.findById(id)
+                .map(exProduct-> updateExstingProduct(exProduct,product))
+                .map(productRepo::save)
+                .orElseThrow(()-> new ProductNotFoundException("Product Not found"));
+    }
+    private Product updateExstingProduct(Product ex, ProductUpdateRequest request){
+        ex.setName(request.getName());
+        ex.setBrand(request.getBrand());
+        ex.setPrice(request.getPrice());
+        ex.setDescription(request.getDescription());
+        ex.setInventory(request.getInventory());
+        Category category=categoryRepo.findByName(request.getCategory().getName());
+        ex.setCategory(category);
+        return ex;
+    }
+
+    @Override
+    public List<Product> getProductsByCategory(String category) {
+        return productRepo.findByCategoryName(category);
+    }
+
+    @Override
+    public List<Product> getProductByBrand(String brand) {
+        return productRepo.findByBrand(brand);
+    }
+
+    @Override
+    public List<Product> getProductByCategoryAndBrand(String category, String brand) {
+        return productRepo.findByCategoryNameAndBrand(category, brand);
+    }
+
+    @Override
+    public List<Product> getProductByName(String name) {
+        return productRepo.findByName(name);
+    }
+
+    @Override
+    public List<Product> getProductByBrandAndName(String brand, String name) {
+        return productRepo.findByBrandAndName(brand,name);
+    }
+
+    @Override
+    public Long countProductByBrandAndName(String brand, String name) {
+        return productRepo.countByBrandAndName(brand,name);
+    }
 }
