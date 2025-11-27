@@ -1,6 +1,7 @@
 package com.aman.ShoppingCart.Service;
 
 import com.aman.ShoppingCart.Exception.ProductNotFoundException;
+import com.aman.ShoppingCart.Exception.ResourceNotFoundException;
 import com.aman.ShoppingCart.Repo.CategoryRepo;
 import com.aman.ShoppingCart.Repo.ProductRepo;
 import com.aman.ShoppingCart.Request.AddProductRequest;
@@ -50,7 +51,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public Product getProductById(long id) {
-        return productRepo.findById(id).orElseThrow(()-> new ProductNotFoundException("Product not found"));
+        return productRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Product not found"));
     }
 
     @Override

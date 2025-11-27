@@ -2,7 +2,7 @@ package com.aman.ShoppingCart.Controller;
 
 import com.aman.ShoppingCart.Dto.ImageDto;
 import com.aman.ShoppingCart.Exception.ResourceNotFoundException;
-import com.aman.ShoppingCart.Respnse.APIResponse;
+import com.aman.ShoppingCart.Response.APIResponse;
 import com.aman.ShoppingCart.Service.ImageService;
 import com.aman.ShoppingCart.model.Image;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.SQLException;
@@ -38,7 +37,7 @@ public class ImageController {
         }
     }
 
-    @GetMapping("/image/download/{imageId")
+    @GetMapping("/image/download/{imageId}")
     public ResponseEntity<Resource> dwnldImage(@PathVariable Long imageId) throws SQLException {
         Image image= imageService.getImageById(imageId);
         ByteArrayResource resource= new ByteArrayResource(image.getImage().getBytes(1,(int)image.getImage().length()));

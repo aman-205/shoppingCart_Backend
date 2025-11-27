@@ -3,10 +3,9 @@ package com.aman.ShoppingCart.Controller;
 
 import com.aman.ShoppingCart.Exception.AlreadyExistException;
 import com.aman.ShoppingCart.Exception.ResourceNotFoundException;
-import com.aman.ShoppingCart.Respnse.APIResponse;
+import com.aman.ShoppingCart.Response.APIResponse;
 import com.aman.ShoppingCart.Service.CategoryService;
 import com.aman.ShoppingCart.model.Category;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
