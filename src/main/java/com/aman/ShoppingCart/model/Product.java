@@ -8,7 +8,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 
-@NoArgsConstructor
+
+@AllArgsConstructor
 @Entity
 public class Product {
 
@@ -100,4 +101,5 @@ public class Product {
         this.inventory = inventory;
         this.category=category;
     }
+    public Product(){}
 }

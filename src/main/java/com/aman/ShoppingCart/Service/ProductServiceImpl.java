@@ -24,6 +24,11 @@ public class ProductServiceImpl implements ProductService{
     private CategoryRepo categoryRepo;
     @Override
     public Product addProduct(AddProductRequest request) {
+        boolean exists = productRepo.existsByNameAndBrand(request.getName(), request.getBrand());
+        if (exists) {
+            throw new RuntimeException("Product '" + request.getName() + "' already exists for brand '" + request.getBrand() + "'");
+        }
+
         Category category= Optional.ofNullable(categoryRepo.findByName(request.getCategory().getName()))
                 .orElseGet(()->{
                         Category newCategory= new Category(request.getCategory().getName());
@@ -68,6 +73,7 @@ public class ProductServiceImpl implements ProductService{
                 .orElseThrow(()-> new ProductNotFoundException("Product Not found"));
     }
     private Product updateExstingProduct(Product ex, ProductUpdateRequest request){
+
         ex.setName(request.getName());
         ex.setBrand(request.getBrand());
         ex.setPrice(request.getPrice());
