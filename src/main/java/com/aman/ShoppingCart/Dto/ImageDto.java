@@ -2,31 +2,34 @@ package com.aman.ShoppingCart.Dto;
 
 
 public class ImageDto {
-    private Long imageId;
-    private String imageName;
-    private String dwnldUrl;
+    private Long id;
 
-    public Long getImageId() {
-        return imageId;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setImageId(Long imageId) {
-        this.imageId = imageId;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
-    public String getImageName() {
-        return imageName;
+    public Long getId() {
+        return id;
     }
 
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getDwnldUrl() {
-        return dwnldUrl;
+    public String getDownloadUrl() {
+        return downloadUrl;
     }
 
-    public void setDwnldUrl(String dwnldUrl) {
-        this.dwnldUrl = dwnldUrl;
+    public void setDownloadUrl(String downloadUrl) {
+        this.downloadUrl = downloadUrl;
     }
+
+    private String fileName;
+    private String downloadUrl;
+
+
 }

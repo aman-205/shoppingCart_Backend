@@ -1,13 +1,18 @@
 package com.aman.ShoppingCart.Service;
 
+import com.aman.ShoppingCart.Dto.ImageDto;
+import com.aman.ShoppingCart.Dto.ProductDto;
 import com.aman.ShoppingCart.Exception.ProductNotFoundException;
 import com.aman.ShoppingCart.Exception.ResourceNotFoundException;
 import com.aman.ShoppingCart.Repo.CategoryRepo;
+import com.aman.ShoppingCart.Repo.ImageRepo;
 import com.aman.ShoppingCart.Repo.ProductRepo;
 import com.aman.ShoppingCart.Request.AddProductRequest;
 import com.aman.ShoppingCart.Request.ProductUpdateRequest;
 import com.aman.ShoppingCart.model.Category;
+import com.aman.ShoppingCart.model.Image;
 import com.aman.ShoppingCart.model.Product;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +27,12 @@ public class ProductServiceImpl implements ProductService{
 
     @Autowired
     private CategoryRepo categoryRepo;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @Autowired
+    private ImageRepo imageRepo;
     @Override
     public Product addProduct(AddProductRequest request) {
         boolean exists = productRepo.existsByNameAndBrand(request.getName(), request.getBrand());
@@ -112,5 +123,21 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public Long countProductByBrandAndName(String brand, String name) {
         return productRepo.countByBrandAndName(brand,name);
+    }
+
+    @Override
+    public List<ProductDto> getConvertedProducts(List<Product> products){
+        return products.stream().map(this::convertToDto).toList();
+    }
+
+    @Override
+    public ProductDto convertToDto(Product product){
+        ProductDto productDto= modelMapper.map(product,ProductDto.class);
+        List<Image> images = imageRepo.findByProductId(product.getId());
+        List<ImageDto> imageDtos=images.stream()
+                .map(image->modelMapper.map(image,ImageDto.class))
+                .toList();
+        productDto.setImages(imageDtos);
+        return productDto;
     }
 }
