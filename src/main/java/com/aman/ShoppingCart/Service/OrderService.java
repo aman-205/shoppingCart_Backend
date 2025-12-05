@@ -1,5 +1,6 @@
 package com.aman.ShoppingCart.Service;
 
+import com.aman.ShoppingCart.Dto.OrderDto;
 import com.aman.ShoppingCart.model.Order;
 
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.List;
 public interface OrderService {
 
     Order placeOrder(Long userId);
-    Order getOrder(Long orderId);
+    OrderDto getOrder(Long orderId);
 
-    List<Order> getUserOrder(Long userId);
+    List<OrderDto> getUserOrder(Long userId);
 }

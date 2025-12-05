@@ -1,5 +1,6 @@
 package com.aman.ShoppingCart.Service;
 
+import com.aman.ShoppingCart.Dto.OrderDto;
 import com.aman.ShoppingCart.Enum.OrderStatus;
 import com.aman.ShoppingCart.Exception.ResourceNotFoundException;
 import com.aman.ShoppingCart.Repo.OrderRepo;
@@ -9,6 +10,7 @@ import com.aman.ShoppingCart.model.Order;
 import com.aman.ShoppingCart.model.OrderItem;
 import com.aman.ShoppingCart.model.Product;
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private CartService cartService;
+
+    private ModelMapper modelMapper;
 
     @Transactional
     @Override
@@ -72,14 +76,18 @@ public class OrderServiceImpl implements OrderService {
 
     }
     @Override
-    public Order getOrder(Long orderId) {
-        return orderRepo.findById(orderId)
+    public OrderDto getOrder(Long orderId) {
+        return orderRepo.findById(orderId).map(this::convertToDto)
                 .orElseThrow(()-> new ResourceNotFoundException("Order not found"));
     }
 
     @Override
-    public List<Order> getUserOrder(Long userId){
-        return orderRepo.findByUserId(userId);
+    public List<OrderDto> getUserOrder(Long userId){
+        List<Order> orders=orderRepo.findByUserId(userId);
+        return orders.stream().map(this::convertToDto).toList();
 
+    }
+    private OrderDto convertToDto(Order order){
+        return modelMapper.map(order,OrderDto.class);
     }
 }

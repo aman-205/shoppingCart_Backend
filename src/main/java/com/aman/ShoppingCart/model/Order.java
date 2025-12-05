@@ -11,6 +11,7 @@ import java.util.Set;
 
 @Entity
 @NoArgsConstructor
+@Table(name="orders")
 public class Order {
 
     @Id
@@ -21,6 +22,7 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
+
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OrderItem> orderItemSet= new HashSet<>();
