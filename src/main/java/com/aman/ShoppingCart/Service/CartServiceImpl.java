@@ -4,11 +4,13 @@ import com.aman.ShoppingCart.Exception.ResourceNotFoundException;
 import com.aman.ShoppingCart.Repo.CartItemRepo;
 import com.aman.ShoppingCart.Repo.CartRepo;
 import com.aman.ShoppingCart.model.Cart;
+import com.aman.ShoppingCart.model.User;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
@@ -44,10 +46,13 @@ public class CartServiceImpl implements CartService {
     }
     @Transactional
     @Override
-    public Long initializeNewCart() {
-        Cart cart = new Cart();
-        // DO NOT set id manually — let DB generate it
-        return cartRepo.save(cart).getId();
+    public Cart initializeNewCart(User user) {
+        return Optional.ofNullable(getCartByUserId(user.getId()))
+                .orElseGet(()-> {
+                    Cart cart= new Cart();
+                    cart.setUser(user);
+                    return cartRepo.save(cart);
+                } );
     }
 
     @Override

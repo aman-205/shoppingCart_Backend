@@ -8,6 +8,9 @@ import com.aman.ShoppingCart.Request.UserUpdateRequest;
 import com.aman.ShoppingCart.model.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -19,6 +22,9 @@ public class UserServiceImpl implements  UserService{
     private UserRepo userRepo;
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Override
     public User getUserById(Long id) {
         return userRepo.findById(id)
@@ -34,7 +40,7 @@ public class UserServiceImpl implements  UserService{
                     user.setFirstName(request.getFirstName());
                     user.setLastName(request.getLastName());
                     user.setEmail(request.getEmail());
-                    user.setPassword(request.getPassword());
+                    user.setPassword(passwordEncoder.encode(request.getPassword()));
                     return userRepo.save(user);
                 }).orElseThrow(()-> new ResourceNotFoundException("User Already Exist"));
     }
@@ -59,5 +65,12 @@ public class UserServiceImpl implements  UserService{
     @Override
     public UserDto convertToDto(User user){
         return modelMapper.map(user, UserDto.class);
+    }
+
+    @Override
+    public User getAuthenticatedUser() {
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        String email= authentication.getName();
+        return userRepo.findByEmail(email);
     }
 }

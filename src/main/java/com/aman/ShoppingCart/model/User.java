@@ -2,6 +2,8 @@ package com.aman.ShoppingCart.model;
 
 import jakarta.persistence.*;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 @Entity
@@ -23,12 +25,23 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> order;
-    public Long getUserId() {
-        return id;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
+    )
+
+    private Collection<Role> roles= new HashSet<>();
+
+
+    public Collection<Role> getRoles() {
+        return roles;
     }
 
-    public void setUserId(Long userId) {
-        this.id = userId;
+    public void setRoles(Collection<Role> roles) {
+        this.roles = roles;
     }
 
     public String getFirstName() {

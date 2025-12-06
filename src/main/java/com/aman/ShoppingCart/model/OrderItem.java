@@ -1,5 +1,6 @@
 package com.aman.ShoppingCart.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ public class OrderItem {
     private Long id;
     private int quantity;
     private BigDecimal price;
+
 
     @ManyToOne
     @JoinColumn(name = "order_id")

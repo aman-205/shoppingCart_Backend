@@ -14,6 +14,14 @@ public class UserDto {
     private List<OrderDto> orders;
     private CartDto cart;
 
+    public CartDto getCart() {
+        return cart;
+    }
+
+    public void setCart(CartDto cart) {
+        this.cart = cart;
+    }
+
     public Long getUserId() {
         return userId;
     }

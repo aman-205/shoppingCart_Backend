@@ -26,7 +26,8 @@ public class OrderController {
     public ResponseEntity<APIResponse> createOrder(@PathVariable  Long userId){
         try{
             Order order= orderService.placeOrder(userId);
-            return ResponseEntity.ok(new APIResponse("Success",order));
+            OrderDto orderDto=orderService.convertToDto(order);
+            return ResponseEntity.ok(new APIResponse("Success",orderDto));
         }catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new APIResponse(e.getMessage(),null));
         }
